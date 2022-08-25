@@ -1,3 +1,4 @@
+//To DO: Host in railway, current still only using ngrok
 import 'dart:convert';
 import 'dart:io';
 import 'package:shelf/shelf.dart';
@@ -20,11 +21,13 @@ Response _echoHandler(Request request) {
 }
 
 Response _webhookExample(Request request) {
+  // response return cannot be a future so no async methods are allowed here
   print(request.headers);
-  print(request.readAsString().then((value) => print(value)));
+  print(request.readAsString().then((value) => print(
+      value))); // to send a reply message we could technically just call a function from here
   print("Hello World");
   final response = Response(200);
-  return response;
+  return response; // it works hahahah
 }
 
 void main(List<String> args) async {

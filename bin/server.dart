@@ -20,13 +20,12 @@ Response _echoHandler(Request request) {
   return Response.ok('$message\n');
 }
 
-Response _webhookExample(Request request) {
+Future<Response> _webhookExample(Request request) async {
   // response return cannot be a future so no async methods are allowed here
   print(request.headers);
-  print(request.readAsString().then((value) => print(
-      value))); // to send a reply message we could technically just call a function from here
+  print(await request.readAsString());
   print("Hello World");
-  final response = Response(200);
+  final response = Response.ok("");
   return response; // it works hahahah
 }
 

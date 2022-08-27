@@ -21,9 +21,10 @@ Response _echoHandler(Request request) {
 }
 
 Future<Response> _webhookExample(Request request) async {
-  // response return cannot be a future so no async methods are allowed here
+  // nvm u can use futures which is nice to have :_
   print(request.headers);
-  print(await request.readAsString());
+  print(await request
+      .readAsString()); // .// this await will block the function  of this code so everyone will wait for this
   print("Hello World");
   final response = Response.ok("");
   return response; // it works hahahah
@@ -38,6 +39,6 @@ void main(List<String> args) async {
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
-  final server = await serve(handler, ip, port);
+  final server = await serve(handler, ip, port, shared: true);
   print('Server listening on port ${server.port}'); // runs on ---
 }

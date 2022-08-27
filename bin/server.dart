@@ -27,13 +27,14 @@ Future<Response> _webhookExample(Request request) async {
   final headers = request.headers;
   final signature = headers["x-line-signature"];
   print("Signature from Line ${signature} ");
-  var hmacSha256 = Hmac(sha256, utf8.encode(Env.channel_secret)); // HMAC-SHA256
+  final hmacSha256 =
+      Hmac(sha256, utf8.encode(Env.channel_secret)); // HMAC-SHA256
 
   final body = await request
       .readAsString(); // .// this await will block the function  of this code so everyone will wait for this
-  var digest = hmacSha256.convert(utf8.encode(body));
-  final base64confirmation = base64Encode(digest.bytes);
-  print("This is the processed x-line-signature ${base64confirmation}");
+  final hmacConverted = hmacSha256.convert(utf8.encode(body));
+  final digest = base64Encode(hmacConverted.bytes);
+  print("This is the processed x-line-signature ${digest}");
   final messageDecoded = jsonDecode(body);
   final response = Response.ok("");
   return response; // it works hahahah

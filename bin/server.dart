@@ -5,6 +5,7 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 import '../lib/env/env.dart';
+import 'package:crypto/crypto.dart';
 
 // Configure routes.
 final _router = Router()
@@ -23,10 +24,17 @@ Response _echoHandler(Request request) {
 
 Future<Response> _webhookExample(Request request) async {
   // nvm u can use futures which is nice to have :_
-  print(request.headers);
-  print(await request
-      .readAsString()); // .// this await will block the function  of this code so everyone will wait for this
-  print("Hello World");
+  final headers = request.headers;
+  final signature = headers["x-line-signature"];
+  print("Signature from Line ${signature} ");
+  var hmacSha256 = Hmac(sha256, utf8.encode(Env.channel_secret)); // HMAC-SHA256
+
+  final body = await request
+      .readAsString(); // .// this await will block the function  of this code so everyone will wait for this
+  var digest = hmacSha256.convert(utf8.encode(body));
+  final base64confirmation = base64Encode(digest.bytes);
+  print("This is the processed x-line-signature ${base64confirmation}");
+  final messageDecoded = jsonDecode(body);
   final response = Response.ok("");
   return response; // it works hahahah
 }

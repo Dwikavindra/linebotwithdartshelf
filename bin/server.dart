@@ -12,10 +12,11 @@ import 'line_webhook_handler.dart';
 
 // Configure routes.
 
+final lineBot = webHookHandler(Env.channel_secret, onLineEvent);
 final _router = Router()
   ..get('/', _rootHandler)
   ..get('/echo/<message>', _echoHandler)
-  ..post("/linewebhook", webHookHandler(Env.channel_secret, onLineMessage));
+  ..post("/linewebhook", lineBot);
 
 Response _rootHandler(Request req) {
   return Response.ok('<div style="background-color:black;">Kipak\n</div>');
@@ -26,8 +27,8 @@ Response _echoHandler(Request request) {
   return Response.ok('$message\n');
 }
 
-void onLineMessage(String message) {
-  print(message);
+void onLineEvent(String event) {
+  print(event);
 }
 
 void main(List<String> args) async {

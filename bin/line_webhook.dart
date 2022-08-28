@@ -7,19 +7,18 @@ import 'package:crypto/crypto.dart';
 // so it would be something along the lines of Router.post('/linewebhoook,LineBot.webHookHandler())
 // with webhook handler heaving on message on unsent etc etc
 //for example to respnse in html look at shelf webhook
-// the shelf router only needs to call LineBot.onMessage i want it when its called it goes something like this LineBot.onMessage((value){
+// the shelf router only needs to call LineBot.onEvent i want it when its called it goes something like this LineBot.onEvent((value){
 // }) gimana ya??/
 
 // setup an enum too for different type of messages
 class LineBot {
-  String message = "";
   final String _channelSecret;
-  final Function(String message) _onMessage;
+  final Function(String message) _onEvent;
   LineBot(
       {required String channelSecret,
-      required Function(String Message) onMessage})
+      required Function(String Message) onEvent})
       : _channelSecret = channelSecret,
-        _onMessage = onMessage;
+        _onEvent = onEvent;
 
   Future<Response> webHookHandler(Request payload) async {
     String body = await payload.readAsString();
@@ -27,7 +26,9 @@ class LineBot {
         await confirmLineXSignature(body: body, headers: payload.headers);
 
     if (isSentFromLine) {
-      _onMessage(body);
+      //before thsi should be a switch statement exploring the type of activity done
+      _onEvent(
+          body); ////hmm shoudl i make the option to do multiple on return ?? for example maybe on Message , onUnsent, on Photo,etc
     }
     return Response.ok("");
   }

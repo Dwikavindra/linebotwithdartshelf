@@ -4,8 +4,7 @@ import 'line_webhook.dart';
 
 Handler webHookHandler(
   String channelSecret,
-  Function(String message) onMessage,
+  Function(String message) onEvent,
 ) {
-  return LineBot(channelSecret: channelSecret, onMessage: onMessage)
-      .webHookHandler;
+  return LineBot(channelSecret: channelSecret, onEvent: onEvent).webHookHandler;
 }

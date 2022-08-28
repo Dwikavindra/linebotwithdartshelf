@@ -7,11 +7,15 @@ import 'package:shelf_router/shelf_router.dart';
 import '../lib/env/env.dart';
 import 'package:crypto/crypto.dart';
 
+import 'line_webhook.dart';
+import 'line_webhook_handler.dart';
+
 // Configure routes.
+
 final _router = Router()
   ..get('/', _rootHandler)
   ..get('/echo/<message>', _echoHandler)
-  ..post("/linewebhook", _webhookExample);
+  ..post("/linewebhook", webHookHandler(Env.channel_secret, onLineMessage));
 
 Response _rootHandler(Request req) {
   return Response.ok('<div style="background-color:black;">Kipak\n</div>');
@@ -22,22 +26,8 @@ Response _echoHandler(Request request) {
   return Response.ok('$message\n');
 }
 
-Future<Response> _webhookExample(Request request) async {
-  // nvm u can use futures which is nice to have :_
-  final headers = request.headers;
-  final signature = headers["x-line-signature"];
-  print("Signature from Line $signature ");
-  final hmacSha256 =
-      Hmac(sha256, utf8.encode(Env.channel_secret)); // HMAC-SHA256
-
-  final body = await request
-      .readAsString(); // .// this await will block the function  of this code so everyone will wait for this
-  final hmacConverted = hmacSha256.convert(utf8.encode(body));
-  final digest = base64Encode(hmacConverted.bytes);
-  print("This is the processed x-line-signature $digest");
-  final messageDecoded = jsonDecode(body);
-  final response = Response.ok("");
-  return response; // it works hahahah
+void onLineMessage(String message) {
+  print(message);
 }
 
 void main(List<String> args) async {

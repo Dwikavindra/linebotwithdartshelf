@@ -12,7 +12,7 @@ import 'line_webhook_handler.dart';
 
 // Configure routes.
 
-final lineBot = webHookHandler(Env.channel_secret, onLineEvent);
+final lineBot = webHookHandler(Env.channel_secret, onEvent: onLineEvent);
 final _router = Router()
   ..get('/', _rootHandler)
   ..get('/echo/<message>', _echoHandler)

@@ -13,10 +13,8 @@ import 'package:crypto/crypto.dart';
 // setup an enum too for different type of messages
 class LineBot {
   final String _channelSecret;
-  final Function(String message) _onEvent;
-  LineBot(
-      {required String channelSecret,
-      required Function(String Message) onEvent})
+  final Function(String message)? _onEvent;
+  LineBot({required String channelSecret, Function(String Message)? onEvent})
       : _channelSecret = channelSecret,
         _onEvent = onEvent;
 
@@ -26,9 +24,10 @@ class LineBot {
         await confirmLineXSignature(body: body, headers: payload.headers);
 
     if (isSentFromLine) {
-      //before thsi should be a switch statement exploring the type of activity done
-      _onEvent(
-          body); ////hmm shoudl i make the option to do multiple on return ?? for example maybe on Message , onUnsent, on Photo,etc
+      //before thsi should be a switch statement exploring the type of activity done, the case should then be in enum
+      _onEvent != null
+          ? _onEvent!(body)
+          : null; ////hmm shoudl i make the option to do multiple on return ?? for example maybe on Message , onUnsent, on Photo,etc
     }
     return Response.ok("");
   }
